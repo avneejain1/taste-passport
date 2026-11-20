@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Taste Passport | Travel the world one recipe at a time</title>
+  <meta name="description" content="Pick a cuisine and explore its dishes, recipes, and the live weather and local time in that country. Built with TheMealDB, CountriesNow, and Open-Meteo.">
+  <meta name="author" content="Avnee Jain">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&amp;family=Figtree:ital,wght@0,400;0,600;0,700;1,400&amp;display=swap">
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <header class="site-header">
+    <p class="logo"><a href="#top" id="top">Taste <span>Passport</span></a></p>
+    <p class="tagline">Travel the world one recipe at a time.</p>
+  </header>
+
+  <main id="main" tabindex="-1">
+
+    <!-- PICK A DESTINATION -->
+    <section class="planner" aria-labelledby="planner-heading">
+      <p class="eyebrow">Boarding now</p>
+      <h1 id="planner-heading">Where are you eating today?</h1>
+      <p class="lead">
+        Choose a cuisine to see its dishes, then open any dish for the full recipe. Each cuisine card also shows
+        the live weather and local time in that country's capital.
+      </p>
+
+      <form class="search" id="search-form" role="search" aria-label="Find a cuisine">
+        <label for="cuisine-input">Cuisine</label>
+        <div class="search-row">
+          <input type="text" id="cuisine-input" name="cuisine" list="cuisine-list" autocomplete="off"
+                 placeholder="Try Italian, Indian, or Jamaican" required>
+          <datalist id="cuisine-list"></datalist>
+          <button type="submit" class="button">Take me there</button>
+        </div>
+      </form>
+
+      <div class="popular">
+        <h2 class="popular-heading">Popular stops</h2>
+        <ul class="chips" id="popular-list">
+          <li><button type="button" class="chip" data-area="Italian">Italian</button></li>
+          <li><button type="button" class="chip" data-area="French">French</button></li>
+          <li><button type="button" class="chip" data-area="Indian">Indian</button></li>
+          <li><button type="button" class="chip" data-area="Mexican">Mexican</button></li>
+          <li><button type="button" class="chip" data-area="Jamaican">Jamaican</button></li>
+          <li><button type="button" class="chip" data-area="Japanese">Japanese</button></li>
+          <li><button type="button" class="chip" data-area="Thai">Thai</button></li>
+          <li><button type="button" class="chip" data-area="Spanish">Spanish</button></li>
+          <li><button type="button" class="chip" data-area="Turkish">Turkish</button></li>
+          <li><button type="button" class="chip" data-area="British">British</button></li>
+        </ul>
+        <p class="surprise">
+          <span>Can't decide?</span>
+          <button type="button" class="button button-secondary" id="surprise-button">Surprise me with a random dish</button>
+        </p>
+      </div>
+
+      <p class="status" id="status" role="status" aria-live="polite"></p>
+    </section>
+
+    <!-- DESTINATION RESULTS -->
+    <section class="destination" id="destination" aria-labelledby="destination-heading" hidden>
+      <article class="country-card" aria-labelledby="destination-heading">
+        <img class="flag" id="flag" src="data:," alt="" width="96" height="72">
+        <div class="country-text">
+          <p class="eyebrow" id="country-name">Country</p>
+          <h2 id="destination-heading">Cuisine</h2>
+          <dl class="facts">
+            <div>
+              <dt>Capital</dt>
+              <dd id="fact-capital">&hellip;</dd>
+            </div>
+            <div>
+              <dt>Local time</dt>
+              <dd id="fact-time">&hellip;</dd>
+            </div>
+            <div>
+              <dt>Weather now</dt>
+              <dd id="fact-weather">&hellip;</dd>
+            </div>
+            <div>
+              <dt>Currency</dt>
+              <dd id="fact-currency">&hellip;</dd>
+            </div>
+          </dl>
+        </div>
+        <p class="stamp-badge" aria-hidden="true">Visited</p>
+      </article>
+
+      <div class="dishes-head">
+        <h3 id="dishes-heading">Dishes</h3>
+        <p id="dish-count" class="dish-count"></p>
+      </div>
+      <ul class="dish-grid" id="dish-grid" aria-labelledby="dishes-heading"></ul>
+    </section>
+
+    <!-- PASSPORT STAMPS -->
+    <section class="passport" aria-labelledby="passport-heading">
+      <div class="passport-head">
+        <div>
+          <p class="eyebrow">Your travels</p>
+          <h2 id="passport-heading">My passport</h2>
+        </div>
+        <button type="button" class="text-button" id="clear-stamps" hidden>Clear stamps</button>
+      </div>
+      <p class="hint" id="passport-empty">Every cuisine you visit earns a stamp here. Click a stamp to go back.</p>
+      <ul class="stamps" id="stamps"></ul>
+    </section>
+  </main>
+
+  <!-- RECIPE DIALOG -->
+  <dialog class="recipe" id="recipe" aria-labelledby="recipe-title">
+    <form method="dialog" class="recipe-close">
+      <button type="submit" class="close-button" aria-label="Close recipe">&times;</button>
+    </form>
+    <img class="recipe-photo" id="recipe-photo" src="data:," alt="" width="700" height="700">
+    <div class="recipe-body">
+      <p class="eyebrow" id="recipe-meta"></p>
+      <h2 id="recipe-title">Recipe</h2>
+      <ul class="tags" id="recipe-tags"></ul>
+
+      <div class="recipe-columns">
+        <section aria-labelledby="ingredients-heading">
+          <h3 id="ingredients-heading">Ingredients</h3>
+          <ul class="ingredients" id="recipe-ingredients"></ul>
+        </section>
+        <section aria-labelledby="steps-heading">
+          <h3 id="steps-heading">Steps</h3>
+          <ol class="steps" id="recipe-steps"></ol>
+        </section>
+      </div>
+
+      <p class="recipe-links" id="recipe-links"></p>
+    </div>
+  </dialog>
+
+  <footer class="site-footer">
+    <p>
+      Recipes and food photos from <a href="https://www.themealdb.com/" rel="noopener">TheMealDB</a>,
+      capitals and currencies from <a href="https://countriesnow.space/" rel="noopener">CountriesNow</a>,
+      and weather from <a href="https://open-meteo.com/" rel="noopener">Open-Meteo</a>.
+      Flags from <a href="https://flagcdn.com/" rel="noopener">Flagpedia</a>.
+    </p>
+    <p><small>&copy; <time datetime="2026">2026</time> Avnee Jain. A single page app built with the Fetch API.</small></p>
+  </footer>
+</body>
+</html>
